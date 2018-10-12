@@ -61,37 +61,35 @@ type Msg
     = FileSelected
     | FileRead FilePortData
     | Send (Result Http.Error String)
-    | HealthEndPoint
+    | SendFile (Maybe File)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    case msg of
-        FileSelected ->
-            ( model
-            , fileSelected model.id
-            )
+        case msg of
+            FileSelected ->
+                ( model
+                , fileSelected model.id
+                )
 
-        HealthEndPoint  ->
-            ( model, healthEndPoint ({contents = "sadas", filename = "zsd"}))
+            FileRead data ->
+                let
+                    newFile =
+                        { contents = data.contents
+                        , filename = data.filename
+                        }
+                in
+                ( { model | mFile = Just newFile }
+                , Cmd.none
+                )
 
-        Send (Ok r) ->
-            ( { model | res = r, error = Nothing }, Cmd.none )
+            SendFile  mFile ->
+               ( model,sendFile mFile)
+            Send (Ok r) ->
+                ( { model | res = r, error = Nothing }, Cmd.none )
 
-        Send (Err err) ->
-            ( { model | error = Just <| httpErrorToString err }, Cmd.none )
-
-        FileRead data ->
-            let
-                newFile =
-                    { contents = data.contents
-                    , filename = data.filename
-                    }
-            in
-            ( { model | mFile = Just newFile }
-            , Cmd.none
-            )
-
+            Send (Err err) ->
+                ( { model | error = Just <| httpErrorToString err }, Cmd.none )
 
 
 ---- VIEW ----
@@ -99,25 +97,49 @@ update msg model =
 
 view : Model -> Html Msg
 view model =
-    renderButton model
+    div[]
+    [renderButton model,viewFile model]
 
 
 
 
 
-viewFilePreview : File -> Model -> Html Msg
-viewFilePreview file model =
+viewFilePreview : File -> Html Msg
+viewFilePreview  file =
     div
         []
         [ text file.contents, text file.filename]
 
 
 
+viewFile : Model -> Html Msg
+viewFile model =
+    let
+        imagePreview =
+            case model.mFile of
+                Just f ->
+                    viewFilePreview f
+
+                Nothing ->
+                    text ""
+    in
+    div [ class "imageWrapper" ]
+        [ input
+            [ type_ "file"
+            , id model.id
+            , on "change"
+                (Json.succeed FileSelected)
+            ]
+            []
+        , imagePreview
+        ]
+
+
 
 renderButton : Model -> Html Msg
 renderButton model =
     div []
-        [ button [ onClick HealthEndPoint ] [ text "Increment Serveeer" ]
+        [ button [ onClick (SendFile model.mFile) ] [ text "Enviar Archivo" ]
         , div [] [ text  model.res ]
         , div [] [ text (Maybe.withDefault "" model.error) ]
         ]
@@ -128,17 +150,21 @@ renderButton model =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    fileContentRead FileRead
+    fileContentRead (SendFile model.mFile)
+
 
 
 
 -- HTTP
 
 
-healthEndPoint : File -> Cmd Msg
-healthEndPoint file =
-    Http.send Send (Http.post "/health2" (buildBody file) decodeCounter)
-
+sendFile : Maybe File -> Cmd Msg
+sendFile mfile =
+    case mfile of
+        Just f ->
+            Http.send Send (Http.post "/health2" (buildBody f ) decodeCounter)
+        Nothing ->
+            Http.send Send (Http.post "/health2" (buildBody ({filename="asd",contents=""}) ) decodeCounter)
 
 httpErrorToString : Http.Error -> String
 httpErrorToString err =
@@ -167,9 +193,11 @@ buildBody file =
 
 memberEncoded : File -> Encode.Value
 memberEncoded file =
+
     let
         list =
             [ ( "fname", Encode.string file.filename )
+          --  . "fcontents", Encode.string file.contents )
            ]
     in
         list
