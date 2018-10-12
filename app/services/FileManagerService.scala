@@ -1,18 +1,13 @@
 package services
 
-
 import javax.inject._
-import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.{FileSystem, Path}
 
+import scala.concurrent.ExecutionContext
 
-case class myConf() extends Configuration {
-  System.setProperty("HADOOP_USER_NAME", "root")
-  this.set("fs.defaultFS", "hdfs://0.0.0.0:8020")
-}
 
 @Singleton
- class HdfsManager @Inject()(conf:myConf)  {
+ class HdfsManager @Inject()(conf:Config)  {
 
 
   def write(filePath: String, data: Array[Byte]) = {
@@ -32,12 +27,20 @@ case class myConf() extends Configuration {
 
 
 @Singleton
-class FileManagerService @Inject()(hdfsManager: HdfsManager) {
+class FileManagerService @Inject()(hdfsManager: HdfsManager) (implicit ec: ExecutionContext){
 
-  def upload(path: String, data: Array[Byte] ) = {
-
+  def saveToHdfs(path: String, data: Array[Byte] ) =
     hdfsManager.write( path, data)
 
-  }
-  def download() = hdfsManager.read("test.txt","/home/ftesei/Documentos/testhdfs.txt")
+  def saveToLocal(path: String, data: Array[Byte] ) =
+    hdfsManager.write( path, data)
+
+
+
+  def download() =
+    hdfsManager.read("test.txt","/home/ftesei/Documentos/testhdfs.txt")
+
+
+
+
 }
