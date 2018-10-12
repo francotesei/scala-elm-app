@@ -1,5 +1,8 @@
 {
     "type": "package",
+    "source-directories": [
+        "app/assets/elm"
+    ],
     "name": "ofertador/webapp",
     "summary": "helpful summary of your project, less than 80 characters",
     "license": "MIT",
@@ -11,7 +14,8 @@
         "elm/core": "1.0.0 <= v < 2.0.0",
         "elm/html": "1.0.0 <= v < 2.0.0",
         "elm/http": "1.0.0 <= v < 2.0.0",
-        "elm/json": "1.0.0 <= v < 2.0.0"
+        "elm/json": "1.0.0 <= v < 2.0.0",
+        "elm/virtual-dom": "1.0.2 <= v < 2.0.0"
     },
     "test-dependencies": {}
 }
