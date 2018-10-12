@@ -34,9 +34,9 @@ case class myConf() extends Configuration {
 @Singleton
 class FileManagerService @Inject()(hdfsManager: HdfsManager) {
 
-  def upload() = {
+  def upload(path: String, data: Array[Byte] ) = {
 
-    hdfsManager.write( "test.txt", "Hello World".getBytes)
+    hdfsManager.write( path, data)
 
   }
   def download() = hdfsManager.read("test.txt","/home/ftesei/Documentos/testhdfs.txt")
