@@ -15,7 +15,7 @@ class FileManagerController @Inject()(fileManager: FileManagerService,config: Co
                                      (implicit ec: ExecutionContext)   extends InjectedController {
 
   def health(): Action[AnyContent] = Action {
-    Ok("ok")
+    Ok(s"""{ "counter": "1" }""")
   }
 
 
