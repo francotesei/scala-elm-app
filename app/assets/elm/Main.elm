@@ -1,97 +1,115 @@
-module ServerCounter exposing (..)
+module Main exposing (Model, Msg(..), init, main, update, view)
 
 import Browser
-import Html exposing (..)
-import Html.Events exposing (onClick)
-import Http
-import Json.Decode as Json
+import Html exposing (Html, div, h1, img, input, text)
+import Html.Attributes exposing (class, id, src, title, type_)
+import Html.Events exposing (on)
+import Json.Decode as JD
+import Ports exposing (FilePortData, fileContentRead, fileSelected)
 
 
-main =
-    Browser.element
-        { init = init
-        , view = view
-        , update = update
-        , subscriptions = subscriptions
-        }
-
-
-
--- MODEL
-
-
-type alias Model =
-    { counter : Int
-    , error : Maybe String
+type alias File =
+    { contents : String
+    , filename : String
     }
 
 
-init : () -> ( Model, Cmd Msg )
-init _ =
-    ( Model 0 Nothing, incrementCounterServer )
+
+---- MODEL ----
+
+
+type alias Model =
+    { id : String
+    , mFile : Maybe File
+    }
+
+
+init : ( Model, Cmd Msg )
+init =
+    ( { id = "FileInputId"
+      , mFile = Nothing
+      }
+    , Cmd.none
+    )
 
 
 
--- UPDATE
+---- UPDATE ----
 
 
 type Msg
-    = IncrementServerCounter
-    | ServerCounterUpdated (Result Http.Error Int)
+    = FileSelected
+    | FileRead FilePortData
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        IncrementServerCounter ->
-            ( model, incrementCounterServer )
+        FileSelected ->
+            ( model
+            , fileSelected model.id
+            )
 
-        ServerCounterUpdated (Ok newCounter) ->
-            ( { model | counter = newCounter, error = Nothing }, Cmd.none )
-
-        ServerCounterUpdated (Err newError) ->
-            ( { model | error = Just <| (httpErrorToString newError) }, Cmd.none )
-
-httpErrorToString: Http.Error -> String
-httpErrorToString err =
-    case err of
-        Http.BadUrl msg -> "BadUrl " ++ msg
-        Http.Timeout -> "Timeout"
-        Http.NetworkError -> "NetworkError"
-        Http.BadStatus _ -> "BadStatus"
-        Http.BadPayload msg _ -> "BadPayload " ++ msg
+        FileRead data ->
+            let
+                newFile =
+                    { contents = data.contents
+                    , filename = data.filename
+                    }
+            in
+            ( { model | mFile = Just newFile }
+            , Cmd.none
+            )
 
 
--- VIEW
+
+---- VIEW ----
 
 
 view : Model -> Html Msg
 view model =
-    div []
-        [ button [ onClick IncrementServerCounter ] [ text "Increment Serveeer" ]
-        , div [] [ text (String.fromInt model.counter) ]
-        , div [] [ text (Maybe.withDefault "" model.error) ]
+    let
+        imagePreview =
+            case model.mFile of
+                Just f ->
+                    viewFilePreview f
+
+                Nothing ->
+                    text ""
+    in
+    div [ class "imageWrapper" ]
+        [ input
+            [ type_ "file"
+            , id model.id
+            , on "change"
+                (JD.succeed FileSelected)
+            ]
+            []
+        , imagePreview
         ]
 
 
-
--- SUBSCRIPTIONS
+viewFilePreview : File -> Html Msg
+viewFilePreview file =
+    div
+        []
+        [ text file.contents , text file.filename]
 
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    Sub.none
+    fileContentRead FileRead
+
+---- PROGRAM ----
 
 
+main : Program () Model Msg
+main =
+    Browser.element
+        { view = view
+        , init = \_ -> init
+        , update = update
+        , subscriptions = always Sub.none
+        }
 
--- HTTP
 
-
-incrementCounterServer : Cmd Msg
-incrementCounterServer =
-    Http.send ServerCounterUpdated (Http.get "/count" decodeCounter)
-
-
-decodeCounter : Json.Decoder Int
-decodeCounter =
-    Json.at [ "counter" ] Json.int
