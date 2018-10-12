@@ -8,6 +8,7 @@ import Http
 import Json.Decode as Json
 import Ports exposing (FilePortData, fileContentRead, fileSelected)
 
+import Json.Encode as Encode
 
 
 ---- PROGRAM ----
@@ -71,8 +72,8 @@ update msg model =
             , fileSelected model.id
             )
 
-        HealthEndPoint ->
-            ( model, healthEndPoint )
+        HealthEndPoint  ->
+            ( model, healthEndPoint ({contents = "sadas", filename = "zsd"}))
 
         Send (Ok r) ->
             ( { model | res = r, error = Nothing }, Cmd.none )
@@ -134,9 +135,9 @@ subscriptions model =
 -- HTTP
 
 
-healthEndPoint : Cmd Msg
-healthEndPoint =
-    Http.send Send (Http.get "/health" decodeCounter)
+healthEndPoint : File -> Cmd Msg
+healthEndPoint file =
+    Http.send Send (Http.post "/health2" (buildBody file) decodeCounter)
 
 
 httpErrorToString : Http.Error -> String
@@ -157,6 +158,22 @@ httpErrorToString err =
         Http.BadPayload msg _ ->
             "BadPayload " ++ msg
 
+
+
+
+buildBody: File -> Http.Body
+buildBody file =
+    memberEncoded file |> Http.jsonBody
+
+memberEncoded : File -> Encode.Value
+memberEncoded file =
+    let
+        list =
+            [ ( "fname", Encode.string file.filename )
+           ]
+    in
+        list
+            |> Encode.object
 
 decodeCounter : Json.Decoder String
 decodeCounter =

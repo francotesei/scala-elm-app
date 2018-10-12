@@ -19,6 +19,15 @@ class FileManagerController @Inject()(fileManager: FileManagerService,config: Co
   }
 
 
+
+  def health2(): Action[AnyContent] = Action { request =>
+
+    val b = request.body
+    Ok(s"""{ "counter": "1" }""")
+  }
+
+
+
   private def saveToHdfs =
     Action.async(parse.multipartFormData) { request =>
     request.body.file(config.get("file.key")).map(f => {

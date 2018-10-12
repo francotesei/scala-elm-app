@@ -16,3 +16,4 @@ POST /upload                           controllers.FileManagerController.uploadF
 GET /download                           controllers.FileManagerController.downloadFile()
 
 GET /health                           controllers.FileManagerController.health()
+POST /health2                           controllers.FileManagerController.health2()
