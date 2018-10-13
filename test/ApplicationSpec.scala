@@ -25,7 +25,7 @@ class ApplicationSpec extends PlaySpec with GuiceOneAppPerTest {
 
       status(home) mustBe OK
       contentType(home) mustBe Some("text/html")
-      contentAsString(home) must include ("Elm.ServerCounter.init")
+      contentAsString(home) must include ("Elm.Main.init")
     }
 
   }
