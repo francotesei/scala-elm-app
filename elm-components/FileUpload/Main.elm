@@ -1,21 +1,41 @@
-module Main exposing (Model, Msg(..), init, main, update, view)
+module Main exposing (..)
 
-import Browser
-import Html exposing (Html, div, h1, img, input, text)
-import Html.Attributes exposing (class, id, src, title, type_)
+import Html exposing (..)
+import Html.Attributes exposing (src, title, class, id, type_)
 import Html.Events exposing (on)
 import Json.Decode as JD
-import Ports exposing (FilePortData, fileContentRead, fileSelected)
+import Ports exposing (FilePortData, fileSelected, fileContentRead)
+
+
+
+
+---- PROGRAM ----
+
+
+main : Program Never Model Msg
+main =
+    program
+        { init = init
+        , update = update
+        , view = view
+        , subscriptions = subscriptions
+        }
+
+
+
+
+
+
+
+
+
+---- MODEL ----
 
 
 type alias File =
     { contents : String
     , filename : String
     }
-
-
-
----- MODEL ----
 
 
 type alias Model =
@@ -99,17 +119,4 @@ viewFilePreview file =
 subscriptions : Model -> Sub Msg
 subscriptions model =
     fileContentRead FileRead
-
----- PROGRAM ----
-
-
-main : Program () Model Msg
-main =
-    Browser.element
-        { view = view
-        , init = \_ -> init
-        , update = update
-        , subscriptions = always Sub.none
-        }
-
 
