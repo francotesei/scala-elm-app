@@ -59,12 +59,13 @@ type Msg
     = FileSelected
     | FileRead FilePortData
     | Send (Result Http.Error String)
-    | SendFile
+    | SendFile (Maybe File)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
+
         FileSelected ->
             ( model
             , fileSelected model.id
@@ -87,8 +88,13 @@ update msg model =
         Send (Err e) ->
             ({model | error = Just <| toString e}, Cmd.none)
 
-        SendFile ->
-            (model, sendFile)
+        SendFile mFile ->
+
+            case mFile of
+                Just f ->
+                    (model, sendFile f)
+                Nothing ->
+                    (model, Cmd.none)
 
 
 
@@ -107,7 +113,7 @@ view model =
 viewSendFile : Model -> Html Msg
 viewSendFile model =
     div []
-    [ button [ onClick SendFile ] [ text "Send File" ]
+    [ button [ onClick (SendFile model.mFile) ] [ text "Send File" ]
      , div [] [ text (toString model.res) ]
      , div [] [ text (Maybe.withDefault "" model.error) ]
     ]
@@ -153,9 +159,11 @@ subscriptions model =
 
 ---- HTTP ----
 
-sendFile : Cmd Msg
-sendFile =
+sendFile : File -> Cmd Msg
+sendFile file =
     Http.send Send (Http.get "/health2" decodeCounter)
+
+
 
 
 decodeCounter : Json.Decoder String
