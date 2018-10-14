@@ -1,17 +1,18 @@
-name := "rfsc-ofertador-webapp"
- 
-version := "1.0" 
-      
-lazy val `backend` = (project in file(".")).enablePlugins(PlayScala)
+name := "ofertador-webapp"
 
-resolvers += "scalaz-bintray" at "https://dl.bintray.com/scalaz/releases"
-      
-resolvers += "Akka Snapshot Repository" at "http://repo.akka.io/snapshots/"
-      
+version := "1.0-SNAPSHOT"
+
+lazy val root = (project in file(".")).enablePlugins(PlayScala)
+
 scalaVersion := "2.11.11"
 
-libraryDependencies ++= Seq( jdbc , ehcache , ws , specs2 % Test , guice )
+libraryDependencies ++= Seq(
+  guice,
+  "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2" % Test,
+  "javax.xml.bind" % "jaxb-api" % "2.3.0",
+  "org.apache.hadoop" % "hadoop-client" % "2.7.0"
+)
 
-unmanagedResourceDirectories in Test <+=  baseDirectory ( _ /"target/web/public/test" )  
 
-      
+//Build elm app: sbt elmMake
+
