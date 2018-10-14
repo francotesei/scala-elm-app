@@ -4,8 +4,8 @@ import Html exposing (..)
 import Html.Attributes exposing (src, title, class, id, type_)
 import Html.Events exposing (on, onClick)
 import Json.Decode as Json
-import Http
-
+import Http exposing (..)
+import Json.Encode as Encode
 import Ports exposing (FilePortData, fileSelected, fileContentRead)
 
 
@@ -86,7 +86,7 @@ update msg model =
             ({model | res = toString r, error = Nothing }, Cmd.none)
 
         Send (Err e) ->
-            ({model | error = Just <| toString e}, Cmd.none)
+            ({model | error = Just <| httpErrorToString e}, Cmd.none)
 
         SendFile mFile ->
 
@@ -161,11 +161,66 @@ subscriptions model =
 
 sendFile : File -> Cmd Msg
 sendFile file =
-    Http.send Send (Http.get "/health2" decodeCounter)
+    Http.send Send (buildRequest (buildBody file))
 
+
+buildRequest : Http.Body -> Request String
+buildRequest b =
+    Http.request
+        { method = "POST"
+        , headers = []
+        , url = "/upload"
+        , body = b
+        , expect = expectJson decodeCounter
+        , timeout = Nothing
+        , withCredentials = False
+        }
+
+
+defaultRequestHeaders : List Header
+defaultRequestHeaders =
+    [ Http.header "Content-Type" "application/json"
+    , Http.header "Content-Transfer-Encoding" "base64"
+    ]
+
+
+
+buildBody: File -> Http.Body
+buildBody file =
+    multipartBody
+        [
+         stringPart "fname"  file.contents
+        ]
+
+
+
+    --memberEncoded file |> Http.jsonBody
+
+--memberEncoded : File -> Encode.Value
+--memberEncoded file =
+  -- Nothing
 
 
 
 decodeCounter : Json.Decoder String
 decodeCounter =
     Json.at [ "counter" ] Json.string
+
+httpErrorToString : Http.Error -> String
+httpErrorToString err =
+    case err of
+        Http.BadUrl msg ->
+            "BadUrl " ++ msg
+
+        Http.Timeout ->
+            "Timeout"
+
+        Http.NetworkError ->
+            "NetworkError"
+
+        Http.BadStatus _ ->
+            "BadStatus"
+
+        Http.BadPayload msg _ ->
+            "BadPayload " ++ msg
+

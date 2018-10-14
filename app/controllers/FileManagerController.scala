@@ -30,6 +30,14 @@ class FileManagerController @Inject()(fileManager: FileManagerService,config: Co
 
   private def saveToHdfs =
     Action.async(parse.multipartFormData) { request =>
+     /*
+      val filename: Option[String] = for {
+        parts <- request.body.dataParts.get(config.get("file.key"))
+        first <- parts.headOption
+      } yield first
+
+*/
+      val a = request.body.as
     request.body.file(config.get("file.key")).map(f => {
       fileManager.saveToHdfs(f.filename, Files.readAllBytes(f.ref))
       Future(Ok("File uploaded"))}).getOrElse(Future(Ok("NO File uploaded")))
