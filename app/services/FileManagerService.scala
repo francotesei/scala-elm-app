@@ -38,7 +38,7 @@ class FileManagerService @Inject()(hdfsManager: HdfsManager) (implicit ec: Execu
 
 
   def download() =
-    hdfsManager.read("test.txt","/home/ftesei/Documentos/testhdfs.txt")
+    hdfsManager.read("esteeselarchivo.txt","/home/ftesei/Documents/testhdfs.txt")
 
 
 

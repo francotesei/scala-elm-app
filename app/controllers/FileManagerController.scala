@@ -4,6 +4,7 @@ import java.nio.file.Files
 import java.io.File
 
 import javax.inject._
+import org.apache.commons.codec.binary.Base64
 import play.api.mvc.{Action, AnyContent, InjectedController}
 import play.mvc.BodyParser
 import services.{Config, FileManagerService}
@@ -30,16 +31,20 @@ class FileManagerController @Inject()(fileManager: FileManagerService,config: Co
 
   private def saveToHdfs =
     Action.async(parse.multipartFormData) { request =>
-     /*
-      val filename: Option[String] = for {
-        parts <- request.body.dataParts.get(config.get("file.key"))
+
+      val filecontent: Option[String] = for {
+        parts <- request.body.dataParts.get("content")
         first <- parts.headOption
       } yield first
 
-*/
-      val a = request.body.as
-    request.body.file(config.get("file.key")).map(f => {
-      fileManager.saveToHdfs(f.filename, Files.readAllBytes(f.ref))
+      val filename: Option[String] = for {
+        parts <- request.body.dataParts.get("filename")
+        first <- parts.headOption
+      } yield first
+
+      filecontent.map(f =>{
+     val b = f.split(",").tail.head
+      fileManager.saveToHdfs(filename.head, Base64.decodeBase64(b))
       Future(Ok("File uploaded"))}).getOrElse(Future(Ok("NO File uploaded")))
   }
 

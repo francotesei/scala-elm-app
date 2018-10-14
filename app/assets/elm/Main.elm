@@ -189,16 +189,10 @@ buildBody: File -> Http.Body
 buildBody file =
     multipartBody
         [
-         stringPart "fname"  file.contents
+         stringPart "filename"  file.filename
+       , stringPart "content"  file.contents
         ]
 
-
-
-    --memberEncoded file |> Http.jsonBody
-
---memberEncoded : File -> Encode.Value
---memberEncoded file =
-  -- Nothing
 
 
 
