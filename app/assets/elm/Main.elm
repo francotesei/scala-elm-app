@@ -40,7 +40,7 @@ type alias Model =
     { id : String
     , mFile : Maybe File
     , error : Maybe String
-    , res : String
+    , res : Maybe String
     }
 
 
@@ -49,7 +49,7 @@ init =
     ( { id = "FileInputId"
       , mFile = Nothing
       , error = Nothing
-      , res = ""
+      , res = Nothing
       }
     , Cmd.none
     )
@@ -87,7 +87,7 @@ update msg model =
             )
 
         Send (Ok r) ->
-            ({model | res = toString r, error = Nothing }, Cmd.none)
+            ({model | res = Just <| toString r, error = Nothing }, Cmd.none)
 
         Send (Err e) ->
             ({model | error = Just <| httpErrorToString e}, Cmd.none)
@@ -136,17 +136,11 @@ view model =
 
         ]
 
-   -- ][
-   -- viewInputFile model , viewSendFile model
-   -- ]
- --Button.button [ Button.secondary, Button.attrs [ Spacing.ml1 ] ] [ text "Secondary" ]
-
-
 viewSendFile : Model -> Html Msg
 viewSendFile model =
     div []
     [  Button.button [ Button.secondary, Button.large, Button.block, Button.attrs [ onClick (SendFile model.mFile) ]] [ text "Enviar" ]
-    , div [] [ text (toString model.res) ]
+    , div [] [ text (Maybe.withDefault "" model.res) ]
      , div [] [ text (Maybe.withDefault "" model.error) ]
     ]
 
@@ -234,7 +228,7 @@ buildBody file =
 
 decodeCounter : Json.Decoder String
 decodeCounter =
-    Json.at [ "counter" ] Json.string
+    Json.at [ "response" ] Json.string
 
 httpErrorToString : Http.Error -> String
 httpErrorToString err =

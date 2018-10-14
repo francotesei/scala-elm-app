@@ -45,7 +45,7 @@ class FileManagerController @Inject()(fileManager: FileManagerService,config: Co
       filecontent.map(f =>{
      val b = f.split(",").tail.head
       fileManager.saveToHdfs(filename.head, Base64.decodeBase64(b))
-      Future(Ok("File uploaded"))}).getOrElse(Future(Ok("NO File uploaded")))
+      Future(Ok(s"""{ "response": "Archivo Enviado" }"""))}).getOrElse(Future(Ok("NO File uploaded")))
   }
 
 
