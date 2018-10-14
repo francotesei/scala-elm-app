@@ -7,7 +7,7 @@ import Ports exposing (FilePortData, fileSelected, fileContentRead)
 import Utils exposing (File)
 import Api exposing (..)
 
-import Auth exposing (goto)
+import Auth exposing (gotoauth0)
 ---- UPDATE ----
 
 
@@ -45,7 +45,7 @@ update msg model =
                 Nothing ->
                     (model, Cmd.none)
         GoTo ->
-            (model, goto "http://google.com")
+            (model, gotoauth0)
 
 
 
