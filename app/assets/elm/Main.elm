@@ -7,6 +7,9 @@ import Json.Decode as Json
 import Http exposing (..)
 import Json.Encode as Encode
 import Ports exposing (FilePortData, fileSelected, fileContentRead)
+import Utils exposing (File)
+import Api exposing (..)
+
 import Bootstrap.CDN as CDN
 import Bootstrap.Grid as Grid
 import Bootstrap.Grid.Col as Col
@@ -30,17 +33,10 @@ main =
 ---- MODEL ----
 
 
-type alias File =
-    { contents : String
-    , filename : String
-    }
-
-
 type alias Model =
     { id : String
     , mFile : Maybe File
-    , error : Maybe String
-    , res : Maybe String
+    , response : ApiResponse
     }
 
 
@@ -48,8 +44,7 @@ init : ( Model, Cmd Msg )
 init =
     ( { id = "FileInputId"
       , mFile = Nothing
-      , error = Nothing
-      , res = Nothing
+      , response = { success = Nothing, error = Nothing}
       }
     , Cmd.none
     )
@@ -62,8 +57,8 @@ init =
 type Msg
     = FileSelected
     | FileRead FilePortData
-    | Send (Result Http.Error String)
     | SendFile (Maybe File)
+    | Send (Result Http.Error String)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -85,15 +80,13 @@ update msg model =
             ( { model | mFile = Just newFile }
             , Cmd.none
             )
-
         Send (Ok r) ->
-            ({model | res = Just <| toString r, error = Nothing }, Cmd.none)
+            ({ model | response = ({ success = Just <| toString r, error = Nothing }) }, Cmd.none)
 
         Send (Err e) ->
-            ({model | error = Just <| httpErrorToString e}, Cmd.none)
+            ({ model   | response = ({ error = Just <| httpErrorToString e, success = Nothing }) }, Cmd.none)
 
         SendFile mFile ->
-
             case mFile of
                 Just f ->
                     (model, sendFile f)
@@ -103,11 +96,16 @@ update msg model =
 
 
 
+sendFile : File -> Cmd Msg
+sendFile file =
+    Http.send Send (buildRequest (buildBody file))
+
+
+
 ---- VIEW ----
 
 
 view : Model -> Html Msg
-
 view model =
     Grid.container []
         [  CDN.stylesheet,
@@ -132,30 +130,19 @@ view model =
 
                                 ,   Grid.col [ Col.md4 ] []
                                 ]
-
-
-        ]
+    ]
 
 viewSendFile : Model -> Html Msg
 viewSendFile model =
     div []
     [  Button.button [ Button.secondary, Button.large, Button.block, Button.attrs [ onClick (SendFile model.mFile) ]] [ text "Enviar" ]
-    , div [] [ text (Maybe.withDefault "" model.res) ]
-     , div [] [ text (Maybe.withDefault "" model.error) ]
+    , div [] [ text (Maybe.withDefault "" model.response.success) ]
+     , div [] [ text (Maybe.withDefault "" model.response.error) ]
     ]
 
 
 viewInputFile : Model -> Html Msg
 viewInputFile model =
-    let
-        imagePreview =
-            case model.mFile of
-                Just f ->
-                    viewFilePreview f
-
-                Nothing ->
-                    text ""
-    in
     div [ class "" ]
     [
          input
@@ -166,19 +153,8 @@ viewInputFile model =
                 (Json.succeed FileSelected)
             ]
             []
-        , imagePreview
+
         ]
-
-
-
-
-viewFilePreview : File -> Html Msg
-viewFilePreview file =
-    div
-        []
-        []
-
-
 
 ---- SUBSCRIPTIONS ----
 
@@ -186,65 +162,4 @@ subscriptions : Model -> Sub Msg
 subscriptions model =
     fileContentRead FileRead
 
-
----- HTTP ----
-
-sendFile : File -> Cmd Msg
-sendFile file =
-    Http.send Send (buildRequest (buildBody file))
-
-
-buildRequest : Http.Body -> Request String
-buildRequest b =
-    Http.request
-        { method = "POST"
-        , headers = []
-        , url = "/upload"
-        , body = b
-        , expect = expectJson decodeCounter
-        , timeout = Nothing
-        , withCredentials = False
-        }
-
-
-defaultRequestHeaders : List Header
-defaultRequestHeaders =
-    [ Http.header "Content-Type" "application/json"
-    , Http.header "Content-Transfer-Encoding" "base64"
-    ]
-
-
-
-buildBody: File -> Http.Body
-buildBody file =
-    multipartBody
-        [
-         stringPart "filename"  file.filename
-       , stringPart "content"  file.contents
-        ]
-
-
-
-
-decodeCounter : Json.Decoder String
-decodeCounter =
-    Json.at [ "response" ] Json.string
-
-httpErrorToString : Http.Error -> String
-httpErrorToString err =
-    case err of
-        Http.BadUrl msg ->
-            "BadUrl " ++ msg
-
-        Http.Timeout ->
-            "Timeout"
-
-        Http.NetworkError ->
-            "NetworkError"
-
-        Http.BadStatus _ ->
-            "BadStatus"
-
-        Http.BadPayload msg _ ->
-            "BadPayload " ++ msg
 
