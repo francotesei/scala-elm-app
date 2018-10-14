@@ -1,14 +1,18 @@
 module Main exposing (..)
 
 import Html exposing (..)
-import Html.Attributes exposing (src, title, class, id, type_)
+import Html.Attributes exposing (src, title, class, id, type_,style,for)
 import Html.Events exposing (on, onClick)
 import Json.Decode as Json
 import Http exposing (..)
 import Json.Encode as Encode
 import Ports exposing (FilePortData, fileSelected, fileContentRead)
-
-
+import Bootstrap.CDN as CDN
+import Bootstrap.Grid as Grid
+import Bootstrap.Grid.Col as Col
+import Bootstrap.Grid.Row as Row
+import Bootstrap.Button as Button
+import Styles exposing (..)
 
 
 ---- PROGRAM ----
@@ -105,16 +109,44 @@ update msg model =
 view : Model -> Html Msg
 
 view model =
-    div[][
-    viewInputFile model , viewSendFile model
-    ]
+    Grid.container []
+        [  CDN.stylesheet,
+            Grid.row [ Row.centerLg ]
+                [
+                    Grid.col [ Col.md4 ] []
+
+
+                ,   Grid.col [ Col.md4 ] [ viewInputFile model ]
+
+
+                ,   Grid.col [ Col.md4 ] []
+                ],
+                br[][],
+                Grid.row [ Row.centerLg ]
+                                [
+                                    Grid.col [ Col.md4 ] []
+
+
+                                ,   Grid.col [ Col.md4 ] [ viewSendFile model ]
+
+
+                                ,   Grid.col [ Col.md4 ] []
+                                ]
+
+
+        ]
+
+   -- ][
+   -- viewInputFile model , viewSendFile model
+   -- ]
+ --Button.button [ Button.secondary, Button.attrs [ Spacing.ml1 ] ] [ text "Secondary" ]
 
 
 viewSendFile : Model -> Html Msg
 viewSendFile model =
     div []
-    [ button [ onClick (SendFile model.mFile) ] [ text "Send File" ]
-     , div [] [ text (toString model.res) ]
+    [  Button.button [ Button.secondary, Button.large, Button.block, Button.attrs [ onClick (SendFile model.mFile) ]] [ text "Enviar" ]
+    , div [] [ text (toString model.res) ]
      , div [] [ text (Maybe.withDefault "" model.error) ]
     ]
 
@@ -130,9 +162,11 @@ viewInputFile model =
                 Nothing ->
                     text ""
     in
-    div [ class "imageWrapper" ]
-        [ input
+    div [ class "" ]
+    [
+         input
             [ type_ "file"
+            , class ""
             , id model.id
             , on "change"
                 (Json.succeed FileSelected)
@@ -142,11 +176,13 @@ viewInputFile model =
         ]
 
 
+
+
 viewFilePreview : File -> Html Msg
 viewFilePreview file =
     div
         []
-        [ text file.contents , text file.filename]
+        []
 
 
 
