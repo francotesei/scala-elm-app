@@ -1,5 +1,5 @@
 module Updates exposing (..)
-import Models exposing (Model)
+import Models exposing (..)
 
 import Http exposing (..)
 import Json.Encode as Encode
@@ -7,14 +7,10 @@ import Ports exposing (FilePortData, fileSelected, fileContentRead)
 import Utils exposing (File)
 import Api exposing (..)
 
+import Auth exposing (goto)
 ---- UPDATE ----
 
 
-type Msg
-    = FileSelected
-    | FileRead FilePortData
-    | SendFile (Maybe File)
-    | Send (Result Http.Error String)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -48,6 +44,8 @@ update msg model =
                     (model, sendFile f)
                 Nothing ->
                     (model, Cmd.none)
+        GoTo ->
+            (model, goto "http://google.com")
 
 
 
