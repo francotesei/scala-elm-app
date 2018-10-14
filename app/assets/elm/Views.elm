@@ -1,5 +1,6 @@
 module Views exposing (..)
 import Models exposing (..)
+import Msgs exposing (..)
 
 
 
@@ -46,7 +47,7 @@ view model =
 viewSendFile : Model -> Html Msg
 viewSendFile model =
     div []
-    [  Button.button [ Button.secondary, Button.large, Button.block, Button.attrs [ onClick GoTo ]] [ text "Enviar" ] --onClick (SendFile model.mFile)
+    [  Button.button [ Button.secondary, Button.large, Button.block, Button.attrs [ onClick (CheckAuth model.auth) ]] [ text "Enviar" ] --onClick (SendFile model.mFile)
     , div [] [ text (Maybe.withDefault "" model.response.success) ]
      , div [] [ text (Maybe.withDefault "" model.response.error) ]
     ]

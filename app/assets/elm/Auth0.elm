@@ -1,15 +1,16 @@
-module Auth exposing (..)
+module Auth0 exposing (..)
 
 import Navigation as Nav
-import Models exposing (..)
+import Msgs exposing (..)
+
+
 
 goto : String -> Cmd Msg
 goto url =
     Nav.load url
 
 
-
-gotoauth0 : Cmd Msg
-gotoauth0 =
+gotoLogin : Cmd Msg
+gotoLogin =
     goto "https://redbee.auth0.com/authorize?response_type=token&client_id=BI0pcNiLJ3GhKSw2MY2diFBngY7chzHe&redirect_uri=http://localhost:9000"
 

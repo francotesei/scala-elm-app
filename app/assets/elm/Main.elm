@@ -1,6 +1,7 @@
 module Main exposing (..)
 import Models exposing (..)
 import Updates exposing (..)
+import Msgs exposing (..)
 import Views exposing (..)
 import Html exposing (..)
 import Ports exposing (FilePortData, fileSelected, fileContentRead)
@@ -26,6 +27,7 @@ init =
     ( { id = "FileInputId"
       , mFile = Nothing
       , response = { success = Nothing, error = Nothing}
+      , auth = {token = ""}
       }
     , Cmd.none
     )

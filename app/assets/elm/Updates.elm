@@ -6,8 +6,9 @@ import Json.Encode as Encode
 import Ports exposing (FilePortData, fileSelected, fileContentRead)
 import Utils exposing (File)
 import Api exposing (..)
-
-import Auth exposing (gotoauth0)
+import AuthModel exposing (..)
+import Auth0 exposing (..)
+import Msgs exposing (..)
 ---- UPDATE ----
 
 
@@ -32,6 +33,7 @@ update msg model =
             ( { model | mFile = Just newFile }
             , Cmd.none
             )
+
         Send (Ok r) ->
             ({ model | response = ({ success = Just <| toString r, error = Nothing }) }, Cmd.none)
 
@@ -44,11 +46,16 @@ update msg model =
                     (model, sendFile f)
                 Nothing ->
                     (model, Cmd.none)
-        GoTo ->
-            (model, gotoauth0)
+
+        CheckAuth auth ->
+            if String.isEmpty auth.token then (model, gotoLogin) else  (model, Cmd.none)
+
+        AuthLogin ->
+            (model,gotoLogin)
 
 
 
 sendFile : File -> Cmd Msg
 sendFile file =
     Http.send Send (buildRequest (buildBody file))
+
