@@ -1,4 +1,4 @@
-module Auth0 exposing (..)
+module Auth0.Commands exposing (..)
 
 import Navigation as Nav
 import Msgs exposing (..)

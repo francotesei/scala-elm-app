@@ -3,7 +3,7 @@ module Msgs exposing (..)
 import  Http
 import Utils exposing (File)
 import Ports exposing (FilePortData)
-import AuthModel exposing (Auth)
+import Auth0.Models exposing (Auth)
 
 
 type Msg

@@ -6,8 +6,8 @@ import Json.Encode as Encode
 import Ports exposing (FilePortData, fileSelected, fileContentRead)
 import Utils exposing (File)
 import Api exposing (..)
-import AuthModel exposing (..)
-import Auth0 exposing (..)
+import Models exposing (..)
+import Auth0.Commands exposing (..)
 import Msgs exposing (..)
 ---- UPDATE ----
 
