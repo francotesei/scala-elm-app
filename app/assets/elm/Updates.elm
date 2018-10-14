@@ -9,15 +9,16 @@ import Api exposing (..)
 import Models exposing (..)
 import Auth0.Commands exposing (..)
 import Msgs exposing (..)
+
+
+
 ---- UPDATE ----
-
-
-
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-
+        UrlChange location ->
+            { model | page = (getPage location.hash) } ! [ Cmd.none ]
         FileSelected ->
             ( model
             , fileSelected model.id
@@ -53,6 +54,21 @@ update msg model =
         AuthLogin ->
             (model,gotoLogin)
 
+
+getPage : String -> Page
+getPage hash =
+    case hash of
+        "#home" ->
+            Home
+
+        "#about" ->
+            About
+
+        "#contact" ->
+            Contact
+
+        _ ->
+            Home
 
 
 sendFile : File -> Cmd Msg

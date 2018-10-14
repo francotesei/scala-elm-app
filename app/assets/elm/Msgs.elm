@@ -4,6 +4,7 @@ import  Http
 import Utils exposing (File)
 import Ports exposing (FilePortData)
 import Auth0.Models exposing (Auth)
+import Navigation
 
 
 type Msg
@@ -13,3 +14,4 @@ type Msg
     | Send (Result Http.Error String)
     | CheckAuth Auth
     | AuthLogin
+    | UrlChange Navigation.Location

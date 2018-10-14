@@ -40,7 +40,7 @@ view model =
                                 ,   Grid.col [ Col.md4 ] [ viewSendFile model ]
 
 
-                                ,   Grid.col [ Col.md4 ] []
+                                ,   Grid.col [ Col.md4 ] [contentNavigation model]
                                 ]
     ]
 
@@ -67,3 +67,16 @@ viewInputFile model =
             []
 
         ]
+
+
+contentNavigation: Model -> Html Msg
+contentNavigation model =
+    case model.page of
+        Home ->
+            h1 [] [ text "Home page!" ]
+
+        About ->
+            h1 [] [ text "About page!" ]
+
+        Contact ->
+            h1 [] [ text "Contact page!" ]

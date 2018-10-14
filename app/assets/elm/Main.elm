@@ -5,19 +5,32 @@ import Msgs exposing (..)
 import Views exposing (..)
 import Html exposing (..)
 import Ports exposing (FilePortData, fileSelected, fileContentRead)
+import Navigation
 
 
 
 ---- PROGRAM ----
 
+{-main : Program Never Model Msg
+main =
+    Navigation.program
+        UrlChange
+            { init = init
+            , update = update
+            , view = view
+            , subscriptions = subscriptions
+            }
+-}
+
 main : Program Never Model Msg
 main =
-    program
-        { init = init
-        , update = update
+    Navigation.program UrlChange
+        { init = (\_ -> init)
         , view = view
+        , update = update
         , subscriptions = subscriptions
         }
+
 
 
 ---- INIT MODEL ----
@@ -28,6 +41,7 @@ init =
       , mFile = Nothing
       , response = { success = Nothing, error = Nothing}
       , auth = {token = ""}
+      , page = Home
       }
     , Cmd.none
     )
