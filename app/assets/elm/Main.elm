@@ -12,18 +12,7 @@ import Ports exposing (..)
 
 ---- PROGRAM ----
 
-{-main : Program Never Model Msg
-main =
-    Navigation.program
-        UrlChange
-            { init = init
-            , update = update
-            , view = view
-            , subscriptions = subscriptions
-            }
--}
-
-main : Program (Maybe (List Data)) Model Msg
+main : Program (Maybe (List StorageData)) Model Msg
 main =
     Navigation.programWithFlags UrlChange
         { init = init
@@ -35,25 +24,32 @@ main =
 
 ---- INIT MODEL ----
 
-init : Maybe (List Data) -> Navigation.Location -> ( Model, Cmd Msg )
+init : Maybe (List StorageData) -> Navigation.Location -> ( Model, Cmd Msg )
 init flags location =
     ( { id = "FileInputId"
       , mFile = Nothing
       , response = { success = Nothing, error = Nothing}
       , auth = {token = "", action = CheckAuth}
       , page = Home
+      , store = (checkStorage flags)
       }
-    , check
+    , checkAuth (checkStorage flags)
     )
 
 
+checkStorage : Maybe (List StorageData) -> (List StorageData)
+checkStorage mList =
+    case mList of
+        Just l ->
+            l
+        Nothing ->
+            []
 
 
-check: Cmd Msg
-check =
-    storePosts [{data1 = "hola"}]
-
-
+checkAuth : (List StorageData) -> Cmd Msg
+checkAuth store =
+    if(List.isEmpty store) then gotoLogin
+    else Cmd.none
 
 
 ---- SUBSCRIPTIONS ----
@@ -63,3 +59,8 @@ subscriptions model =
     fileContentRead FileRead
 
 
+{-
+ if( not (List.isEmpty (List.filter (\x -> x.key == "token" &&  not (String.isEmpty x.value)) store))) then gotoLogin
+    else Cmd.none
+
+-}

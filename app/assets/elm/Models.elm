@@ -2,8 +2,9 @@ module Models exposing (..)
 
 import Utils exposing (File)
 import Api exposing (ApiResponse)
-import Ports exposing (FilePortData)
+import Ports exposing (FilePortData,StorageData)
 import Auth0.Models exposing (Auth)
+
 
 ---- MODEL ----
 
@@ -20,5 +21,6 @@ type alias Model =
     , response : ApiResponse
     , auth : Auth
     , page : Page
+    , store : (List StorageData)
      }
 

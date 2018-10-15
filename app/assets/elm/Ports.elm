@@ -6,15 +6,16 @@ type alias FilePortData =
     , filename : String
     }
 
+type alias StorageData =
+    { key : String
+    , value : String
+    }
+
+
 
 port fileSelected : String -> Cmd msg
 
-
 port fileContentRead : (FilePortData -> msg) -> Sub msg
 
-port storePosts : List Data -> Cmd msg
+port elmStore : List StorageData -> Cmd msg
 
-type alias Data =
-    { data1 : String
-
-    }

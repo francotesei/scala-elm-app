@@ -19,13 +19,15 @@
                 var startingState = storedState ? JSON.parse(storedState) : null;
                 var app = Elm.Main.fullscreen(startingState);
 
-                app.ports.storePosts.subscribe(function(posts) {
+                app.ports.elmStore.subscribe(function(posts) {
                     if (posts.length > 0) {
                         var postsJson = JSON.stringify(posts);
                         localStorage.setItem('post-app-save', postsJson);
                         console.log("Saved state: ", postsJson);
                     }
                 });
+
+
 
                 app.ports.fileSelected.subscribe(function (id) {
                     var node = document.getElementById(id);
