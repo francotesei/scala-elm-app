@@ -13,6 +13,7 @@ import Bootstrap.Grid as Grid
 import Bootstrap.Grid.Col as Col
 import Bootstrap.Grid.Row as Row
 import Bootstrap.Button as Button
+import Bootstrap.Alert as Alert
 
 
 ---- VIEW ----
@@ -42,7 +43,7 @@ loadingView model =
 homeView :Model -> Html Msg
 homeView model =
     Grid.container []
-        [  CDN.stylesheet,
+        [  CDN.stylesheet, br [] [], br [] [], br [] [],
             Grid.row [ Row.centerLg ]
                 [
                     Grid.col [ Col.md4 ] []
@@ -74,9 +75,22 @@ viewSendFile model =
     div []
     [  Button.button [ Button.secondary, Button.large, Button.block, Button.attrs [ onClick (SendFile model.mFile) ]] [ text "Enviar" ],
     Button.button [ Button.secondary, Button.large, Button.block, Button.attrs [ onClick Logout ]] [ text "Logout" ]
-    , div [] [ text (Maybe.withDefault "" model.response.success) ]
-     , div [] [ text (Maybe.withDefault "" model.response.error) ]
+    , br [] []
+    , div [] [ showRes model.response.success ]
+     , div [] [ showError model.response.error ]
     ]
+
+showRes : (Maybe String) -> Html Msg
+showRes mRes =
+    case mRes of
+        Just r -> Alert.simplePrimary [] [text r]
+        Nothing -> div [] []
+
+showError : (Maybe String) -> Html Msg
+showError mErr =
+    case mErr of
+        Just e -> Alert.simpleDanger [] [text e]
+        Nothing -> div [] []
 
 
 viewInputFile : Model -> Html Msg
