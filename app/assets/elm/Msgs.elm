@@ -14,3 +14,4 @@ type Msg
     | Send (Result Http.Error String)
     | UrlChange Navigation.Location
     | AuthManager Auth
+    | Logout

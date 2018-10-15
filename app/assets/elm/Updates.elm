@@ -2,7 +2,7 @@ module Updates exposing (..)
 import Models exposing (..)
 
 import Http exposing (..)
-import Ports exposing (FilePortData, fileSelected, fileContentRead,elmStore)
+import Ports exposing (FilePortData, fileSelected, fileContentRead,clearStorage)
 import Utils exposing (File)
 import Api exposing (..)
 import Models exposing (..)
@@ -18,7 +18,7 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
         case msg of
             UrlChange location ->
-                { model | page = (getPage location.hash) } ! [ if   (getPage location.hash) == AuthCallback then extractToken else Cmd.none ]
+                { model | page = (getPage location.hash) } ! [ Cmd.none ]
 
             FileSelected ->
                 ( model
@@ -54,13 +54,9 @@ update msg model =
             AuthManager auth ->
                 if String.isEmpty auth.token then (model, gotoLogin) else (model ,Cmd.none)
 
+            Logout -> (model,Cmd.batch [ (clearStorage "all"), (refreshUrl)])
 
 
-
-
-extractToken : Cmd Msg
-extractToken =
-    elmStore [({key = "token", value ="123"})]
 
 
 getPage : String -> Page

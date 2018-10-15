@@ -17,5 +17,6 @@ port fileSelected : String -> Cmd msg
 
 port fileContentRead : (FilePortData -> msg) -> Sub msg
 
-port elmStore : List StorageData -> Cmd msg
+port saveStorage : List StorageData -> Cmd msg
 
+port clearStorage : String -> Cmd msg

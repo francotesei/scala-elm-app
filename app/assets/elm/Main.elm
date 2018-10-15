@@ -7,7 +7,7 @@ import Html exposing (..)
 import Ports exposing (FilePortData, fileSelected, fileContentRead)
 import Navigation
 import Auth0.Actions exposing (..)
-import Auth0.Commands exposing (gotoLogin,goto)
+import Auth0.Commands exposing (checkAuth)
 import Ports exposing (..)
 import QueryString
 
@@ -43,16 +43,6 @@ transformStorage mList =
     case mList of
         Just list -> list
         Nothing -> []
-
-
-checkAuth : (List StorageData) -> Navigation.Location -> Cmd Msg
-checkAuth store location =
-    if(List.isEmpty store && not (String.contains "#access_token" location.hash)) then gotoLogin
-    else
-        let mToken = (QueryString.parse location.hash |> QueryString.one QueryString.string "#access_token")
-        in case mToken of
-            Just token -> Cmd.batch [ (elmStore [({key = "access_token", value = token})]), (goto "http://localhost:9000#home") ]
-            Nothing -> Cmd.none
 
 ---- SUBSCRIPTIONS ----
 

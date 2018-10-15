@@ -47,7 +47,8 @@ view model =
 viewSendFile : Model -> Html Msg
 viewSendFile model =
     div []
-    [  Button.button [ Button.secondary, Button.large, Button.block, Button.attrs [ onClick (SendFile model.mFile) ]] [ text "Enviar" ] --onClick (SendFile model.mFile)
+    [  Button.button [ Button.secondary, Button.large, Button.block, Button.attrs [ onClick (SendFile model.mFile) ]] [ text "Enviar" ],
+    Button.button [ Button.secondary, Button.large, Button.block, Button.attrs [ onClick Logout ]] [ text "Logout" ]
     , div [] [ text (Maybe.withDefault "" model.response.success) ]
      , div [] [ text (Maybe.withDefault "" model.response.error) ]
     ]

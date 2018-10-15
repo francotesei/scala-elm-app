@@ -21,12 +21,17 @@
                 var app = Elm.Main.fullscreen(startingState); //init elm app
 
                 // store port
-                app.ports.elmStore.subscribe(function(posts) {
+                app.ports.saveStorage.subscribe(function(posts) {
                     if (posts.length > 0) {
                         var postsJson = JSON.stringify(posts);
                         localStorage.setItem('post-app-save', postsJson);
                         console.log("Saved state: ", postsJson);
                     }
+                });
+
+                app.ports.clearStorage.subscribe(function(key) {
+                        localStorage.clear();
+                        console.log("Clean storage");
                 });
 
 
