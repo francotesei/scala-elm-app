@@ -1,8 +1,4 @@
 import com.google.inject.AbstractModule
-import java.time.Clock
-
-import services.{AtomicCounter, Counter}
-
 
 /**
  * This class is a Guice module that tells Guice how to bind several
@@ -17,8 +13,6 @@ import services.{AtomicCounter, Counter}
 class Module extends AbstractModule {
 
   override def configure() = {
-    // Set AtomicCounter as the implementation for Counter.
-    bind(classOf[Counter]).to(classOf[AtomicCounter])
   }
 
 }
