@@ -19,7 +19,7 @@ goto url =
 
 gotoHome: Cmd Msg
 gotoHome =
-    goto "http://localhost:9000#home"
+    goto "/#home"
 
 
 refreshUrl : Cmd Msg
