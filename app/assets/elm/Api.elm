@@ -2,7 +2,8 @@ module Api exposing (..)
 
 import Json.Decode as Json
 import Http exposing (..)
-import Utils exposing (File)
+import Types exposing (File)
+import Msgs exposing (..)
 
 
 type  alias ApiResponse =
@@ -18,7 +19,7 @@ buildRequest b =
         , headers = []
         , url = "/upload"
         , body = b
-        , expect = expectJson decodeCounter
+        , expect = expectJson decodeResponse
         , timeout = Nothing
         , withCredentials = False
         }
@@ -43,8 +44,8 @@ buildBody file =
 
 
 
-decodeCounter : Json.Decoder String
-decodeCounter =
+decodeResponse : Json.Decoder String
+decodeResponse =
     Json.at [ "response" ] Json.string
 
 httpErrorToString : Http.Error -> String
@@ -65,3 +66,6 @@ httpErrorToString err =
         Http.BadPayload msg _ ->
             "BadPayload " ++ msg
 
+sendFile : File -> Cmd Msg
+sendFile file =
+    Http.send Send (buildRequest (buildBody file))

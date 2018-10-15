@@ -1,4 +1,4 @@
-module Utils exposing (..)
+module Types exposing (..)
 
 
 type alias File =

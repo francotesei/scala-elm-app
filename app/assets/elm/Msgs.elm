@@ -1,7 +1,7 @@
 module Msgs exposing (..)
 
 import  Http
-import Utils exposing (File)
+import Types exposing (File)
 import Ports exposing (FilePortData)
 import Auth0.Models exposing (Auth)
 import Navigation

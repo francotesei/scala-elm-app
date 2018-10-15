@@ -3,7 +3,7 @@ import Models exposing (..)
 
 import Http exposing (..)
 import Ports exposing (FilePortData, fileSelected, fileContentRead,clearStorage)
-import Utils exposing (File)
+import Types exposing (File)
 import Api exposing (..)
 import Models exposing (..)
 import Auth0.Commands exposing (..)
@@ -18,7 +18,9 @@ import LocalStorage
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
+
         case msg of
+
             UrlChange location ->
                 { model | page = (getPage location.hash) } ! [ Cmd.none ]
 
@@ -59,12 +61,4 @@ update msg model =
             Logout -> (model,Cmd.batch [ (LocalStorage.delete "all"), (gotoLogout)])
 
 
-
-
-
-
-
-sendFile : File -> Cmd Msg
-sendFile file =
-    Http.send Send (buildRequest (buildBody file))
 

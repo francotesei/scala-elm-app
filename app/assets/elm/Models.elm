@@ -1,6 +1,6 @@
 module Models exposing (..)
 
-import Utils exposing (File)
+import Types exposing (File)
 import Api exposing (ApiResponse)
 import Ports exposing (FilePortData,StorageData)
 import Auth0.Models exposing (Auth)
