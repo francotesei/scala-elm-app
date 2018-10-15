@@ -1,39 +1,52 @@
 module Main exposing (..)
 import Models exposing (..)
 import Updates exposing (..)
+import Msgs exposing (..)
 import Views exposing (..)
 import Html exposing (..)
 import Ports exposing (FilePortData, fileSelected, fileContentRead)
-
-
+import Navigation
+import Auth0.Actions exposing (..)
+import Auth0.Commands exposing (checkAuth)
+import Ports exposing (..)
+import QueryString
 
 ---- PROGRAM ----
 
-main : Program Never Model Msg
+main : Program (Maybe (List StorageData)) Model Msg
 main =
-    program
+    Navigation.programWithFlags UrlChange
         { init = init
-        , update = update
         , view = view
+        , update = update
         , subscriptions = subscriptions
         }
 
 
 ---- INIT MODEL ----
 
-init : ( Model, Cmd Msg )
-init =
+init : Maybe (List StorageData) -> Navigation.Location -> ( Model, Cmd Msg )
+init flags location =
     ( { id = "FileInputId"
       , mFile = Nothing
       , response = { success = Nothing, error = Nothing}
+      , auth = {token = "", action = CheckAuth}
+      , page = Home
+      , store = (transformStorage flags)
       }
-    , Cmd.none
+    , checkAuth (transformStorage flags) location
     )
+
+
+transformStorage : Maybe (List StorageData) -> (List StorageData)
+transformStorage mList =
+    case mList of
+        Just list -> list
+        Nothing -> []
 
 ---- SUBSCRIPTIONS ----
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
     fileContentRead FileRead
-
 

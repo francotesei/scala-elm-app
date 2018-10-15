@@ -2,9 +2,7 @@ module Api exposing (..)
 
 import Json.Decode as Json
 import Http exposing (..)
-import Json.Encode as Encode
 import Utils exposing (File)
-import Html exposing (..)
 
 
 type  alias ApiResponse =

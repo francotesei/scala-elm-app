@@ -1,4 +1,4 @@
-port module Ports exposing (FilePortData, fileContentRead, fileSelected)
+port module Ports exposing (..)
 
 
 type alias FilePortData =
@@ -6,9 +6,17 @@ type alias FilePortData =
     , filename : String
     }
 
+type alias StorageData =
+    { key : String
+    , value : String
+    }
+
 
 
 port fileSelected : String -> Cmd msg
 
-
 port fileContentRead : (FilePortData -> msg) -> Sub msg
+
+port saveStorage : List StorageData -> Cmd msg
+
+port clearStorage : String -> Cmd msg
