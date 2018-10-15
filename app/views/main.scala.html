@@ -13,7 +13,19 @@
         <div id="app"></div>
         <script type="text/javascript">
                 //Elm.Main.embed(document.getElementById("app"));
-                var app = Elm.Main.fullscreen();
+
+                var storedState = localStorage.getItem('post-app-save');
+                console.log("Retrieved state: ", storedState);
+                var startingState = storedState ? JSON.parse(storedState) : null;
+                var app = Elm.Main.fullscreen(startingState);
+
+                app.ports.storePosts.subscribe(function(posts) {
+                    if (posts.length > 0) {
+                        var postsJson = JSON.stringify(posts);
+                        localStorage.setItem('post-app-save', postsJson);
+                        console.log("Saved state: ", postsJson);
+                    }
+                });
 
                 app.ports.fileSelected.subscribe(function (id) {
                     var node = document.getElementById(id);

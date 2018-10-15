@@ -8,6 +8,7 @@ import Ports exposing (FilePortData, fileSelected, fileContentRead)
 import Navigation
 import Auth0.Actions exposing (..)
 import Auth0.Commands exposing (gotoLogin)
+import Ports exposing (..)
 
 ---- PROGRAM ----
 
@@ -22,10 +23,10 @@ main =
             }
 -}
 
-main : Program Never Model Msg
+main : Program (Maybe (List Data)) Model Msg
 main =
-    Navigation.program UrlChange
-        { init = (\_ -> init)
+    Navigation.programWithFlags UrlChange
+        { init = init
         , view = view
         , update = update
         , subscriptions = subscriptions
@@ -34,21 +35,23 @@ main =
 
 ---- INIT MODEL ----
 
-init : ( Model, Cmd Msg )
-init =
+init : Maybe (List Data) -> Navigation.Location -> ( Model, Cmd Msg )
+init flags location =
     ( { id = "FileInputId"
       , mFile = Nothing
       , response = { success = Nothing, error = Nothing}
       , auth = {token = "", action = CheckAuth}
       , page = Home
       }
-    , Cmd.none
+    , check
     )
+
+
 
 
 check: Cmd Msg
 check =
-    gotoLogin
+    storePosts [{data1 = "hola"}]
 
 
 
