@@ -12,6 +12,5 @@ type Msg
     | FileRead FilePortData
     | SendFile (Maybe File)
     | Send (Result Http.Error String)
-    | CheckAuth Auth
-    | AuthLogin
     | UrlChange Navigation.Location
+    | AuthManager Auth

@@ -47,7 +47,7 @@ view model =
 viewSendFile : Model -> Html Msg
 viewSendFile model =
     div []
-    [  Button.button [ Button.secondary, Button.large, Button.block, Button.attrs [ onClick (CheckAuth model.auth) ]] [ text "Enviar" ] --onClick (SendFile model.mFile)
+    [  Button.button [ Button.secondary, Button.large, Button.block, Button.attrs [ onClick (SendFile model.mFile) ]] [ text "Enviar" ] --onClick (SendFile model.mFile)
     , div [] [ text (Maybe.withDefault "" model.response.success) ]
      , div [] [ text (Maybe.withDefault "" model.response.error) ]
     ]
@@ -69,14 +69,6 @@ viewInputFile model =
         ]
 
 
-contentNavigation: Model -> Html Msg
+contentNavigation: Model ->  Msg
 contentNavigation model =
-    case model.page of
-        Home ->
-            h1 [] [ text "Home page!" ]
-
-        About ->
-            h1 [] [ text "About page!" ]
-
-        Contact ->
-            h1 [] [ text "Contact page!" ]
+    (AuthManager model.auth)

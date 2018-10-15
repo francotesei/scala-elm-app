@@ -13,11 +13,12 @@ type Page
     | Contact
 
 
+
 type alias Model =
     { id : String
     , mFile : Maybe File
     , response : ApiResponse
     , auth : Auth
     , page : Page
-    }
+     }
 
