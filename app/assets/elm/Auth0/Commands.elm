@@ -23,9 +23,11 @@ gotoLogout =
 
 manageAuth : (List StorageData) -> Navigation.Location -> Cmd Msg
 manageAuth store location =
-    if(List.isEmpty store && not (String.contains "#access_token" location.hash)) then gotoLogin
-    else
+    if(String.contains "#access_token" location.hash) then
         let mToken = (QueryString.parse location.hash |> QueryString.one QueryString.string "#access_token")
         in case mToken of
             Just token -> Cmd.batch [ (LocalStorage.save [({key = "access_token", value = token})]), (gotoHome) ]
             Nothing -> Cmd.none
+    else if (List.isEmpty store) then
+        gotoLogin
+    else gotoHome
