@@ -10,9 +10,7 @@ import Auth0.Models exposing (Auth)
 
 type Page
     = Home
-    | About
-    | Contact
-
+    | AuthCallback
 
 
 type alias Model =

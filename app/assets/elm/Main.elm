@@ -33,7 +33,7 @@ init flags location =
       , page = Home
       , store = (checkStorage flags)
       }
-    , checkAuth (checkStorage flags)
+    , checkAuth (checkStorage flags) location
     )
 
 
@@ -46,9 +46,9 @@ checkStorage mList =
             []
 
 
-checkAuth : (List StorageData) -> Cmd Msg
-checkAuth store =
-    if(List.isEmpty store) then gotoLogin
+checkAuth : (List StorageData) -> Navigation.Location -> Cmd Msg
+checkAuth store location =
+    if(List.isEmpty store && location.hash /= "#authcallback") then gotoLogin
     else Cmd.none
 
 

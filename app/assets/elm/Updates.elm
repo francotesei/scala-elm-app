@@ -2,7 +2,7 @@ module Updates exposing (..)
 import Models exposing (..)
 
 import Http exposing (..)
-import Ports exposing (FilePortData, fileSelected, fileContentRead)
+import Ports exposing (FilePortData, fileSelected, fileContentRead,elmStore)
 import Utils exposing (File)
 import Api exposing (..)
 import Models exposing (..)
@@ -18,7 +18,7 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
         case msg of
             UrlChange location ->
-                { model | page = (getPage location.hash) } ! [ Cmd.none ]
+                { model | page = (getPage location.hash) } ! [ if   (getPage location.hash) == AuthCallback then extractToken else Cmd.none ]
 
             FileSelected ->
                 ( model
@@ -56,18 +56,21 @@ update msg model =
 
 
 
+
+
+extractToken : Cmd Msg
+extractToken =
+    elmStore [({key = "token", value ="123"})]
+
+
 getPage : String -> Page
 getPage hash =
     case hash of
         "#home" ->
             Home
 
-        "#about" ->
-            About
-
-        "#contact" ->
-            Contact
-
+        "#authcallback" ->
+            AuthCallback
         _ ->
             Home
 
