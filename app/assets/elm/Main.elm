@@ -48,7 +48,7 @@ checkStorage mList =
 
 checkAuth : (List StorageData) -> Navigation.Location -> Cmd Msg
 checkAuth store location =
-    if(List.isEmpty store && location.hash /= "#authcallback") then gotoLogin
+    if( List.isEmpty store && not (String.contains "#access_token" location.hash)) then gotoLogin
     else Cmd.none
 
 

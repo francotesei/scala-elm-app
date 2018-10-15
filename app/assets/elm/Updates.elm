@@ -69,7 +69,7 @@ getPage hash =
         "#home" ->
             Home
 
-        "#authcallback" ->
+        "#access_token" ->
             AuthCallback
         _ ->
             Home
