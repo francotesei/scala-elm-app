@@ -9,6 +9,8 @@ import Models exposing (..)
 import Auth0.Commands exposing (..)
 import Auth0.Models exposing (Auth)
 import Msgs exposing (..)
+import Routing exposing (getPage)
+import LocalStorage
 
 
 
@@ -54,23 +56,12 @@ update msg model =
             AuthManager auth ->
                 if String.isEmpty auth.token then (model, gotoLogin) else (model ,Cmd.none)
 
-            Logout -> (model,Cmd.batch [ (clearStorage "all"), (gotoLogout)])
+            Logout -> (model,Cmd.batch [ (LocalStorage.delete "all"), (gotoLogout)])
 
 
 
 
-getPage : String -> Page
-getPage hash =
-    case hash of
-        "#home" ->
-            Home
 
-        "#access_token" ->
-            AuthCallback
-        "loading" ->
-            Loading
-        _ ->
-            Home
 
 
 sendFile : File -> Cmd Msg

@@ -3,7 +3,7 @@ import Models exposing (..)
 import Msgs exposing (..)
 
 
-
+import Routing exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (src, title, class, id, type_,style,for)
 import Html.Events exposing (on, onClick)
@@ -13,6 +13,7 @@ import Bootstrap.Grid as Grid
 import Bootstrap.Grid.Col as Col
 import Bootstrap.Grid.Row as Row
 import Bootstrap.Button as Button
+
 
 ---- VIEW ----
 

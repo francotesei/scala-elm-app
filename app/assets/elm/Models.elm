@@ -4,14 +4,9 @@ import Utils exposing (File)
 import Api exposing (ApiResponse)
 import Ports exposing (FilePortData,StorageData)
 import Auth0.Models exposing (Auth)
-
+import Routing exposing (Page)
 
 ---- MODEL ----
-
-type Page
-    = Home
-    | AuthCallback
-    | Loading
 
 
 type alias Model =

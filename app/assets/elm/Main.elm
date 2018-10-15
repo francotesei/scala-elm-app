@@ -7,9 +7,10 @@ import Html exposing (..)
 import Ports exposing (FilePortData, fileSelected, fileContentRead)
 import Navigation
 import Auth0.Actions exposing (..)
-import Auth0.Commands exposing (checkAuth)
+import Auth0.Commands exposing (manageAuth)
 import Ports exposing (..)
 import QueryString
+import Routing exposing (..)
 
 ---- PROGRAM ----
 
@@ -34,7 +35,7 @@ init flags location =
       , page = Loading
       , store = (transformStorage flags)
       }
-    , checkAuth (transformStorage flags) location
+    , manageAuth (transformStorage flags) location
     )
 
 
