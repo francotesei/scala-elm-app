@@ -9,6 +9,7 @@ import Navigation
 import Auth0.Actions exposing (..)
 import Auth0.Commands exposing (gotoLogin)
 import Ports exposing (..)
+import QueryString
 
 ---- PROGRAM ----
 
@@ -31,26 +32,28 @@ init flags location =
       , response = { success = Nothing, error = Nothing}
       , auth = {token = "", action = CheckAuth}
       , page = Home
-      , store = (checkStorage flags)
+      , store = (transformStorage flags)
       }
-    , checkAuth (checkStorage flags) location
+    , checkAuth (transformStorage flags) location
     )
 
 
-checkStorage : Maybe (List StorageData) -> (List StorageData)
-checkStorage mList =
+transformStorage : Maybe (List StorageData) -> (List StorageData)
+transformStorage mList =
     case mList of
-        Just l ->
-            l
-        Nothing ->
-            []
+        Just list -> list
+        Nothing -> []
 
 
 checkAuth : (List StorageData) -> Navigation.Location -> Cmd Msg
-checkAuth store location =
-    if( List.isEmpty store && not (String.contains "#access_token" location.hash)) then gotoLogin
-    else Cmd.none
 
+checkAuth store location =
+    if(List.isEmpty store && not (String.contains "#access_token" location.hash)) then gotoLogin
+    else
+        let mToken = (QueryString.parse location.hash |> QueryString.one QueryString.string "#access_token")
+        in case mToken of
+            Just token -> elmStore [({key = "access_token", value = token})]
+            Nothing -> Cmd.none
 
 ---- SUBSCRIPTIONS ----
 
@@ -58,9 +61,3 @@ subscriptions : Model -> Sub Msg
 subscriptions model =
     fileContentRead FileRead
 
-
-{-
- if( not (List.isEmpty (List.filter (\x -> x.key == "token" &&  not (String.isEmpty x.value)) store))) then gotoLogin
-    else Cmd.none
-
--}
