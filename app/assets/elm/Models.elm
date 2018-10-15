@@ -11,6 +11,7 @@ import Auth0.Models exposing (Auth)
 type Page
     = Home
     | AuthCallback
+    | Loading
 
 
 type alias Model =

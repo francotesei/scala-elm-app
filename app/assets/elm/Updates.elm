@@ -67,6 +67,8 @@ getPage hash =
 
         "#access_token" ->
             AuthCallback
+        "loading" ->
+            Loading
         _ ->
             Home
 

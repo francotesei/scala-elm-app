@@ -19,6 +19,27 @@ import Bootstrap.Button as Button
 
 view : Model -> Html Msg
 view model =
+    routesView model
+
+
+routesView : Model -> Html Msg
+routesView model =
+    case model.page of
+        Home -> homeView model
+
+        Loading -> loadingView model
+
+        _ -> homeView model
+
+
+
+loadingView : Model -> Html Msg
+loadingView model =
+    div[][ text "cargando..." ]
+
+
+homeView :Model -> Html Msg
+homeView model =
     Grid.container []
         [  CDN.stylesheet,
             Grid.row [ Row.centerLg ]
@@ -43,6 +64,9 @@ view model =
                                 ,   Grid.col [ Col.md4 ] []
                                 ]
     ]
+
+
+
 
 viewSendFile : Model -> Html Msg
 viewSendFile model =

@@ -31,7 +31,7 @@ init flags location =
       , mFile = Nothing
       , response = { success = Nothing, error = Nothing}
       , auth = {token = "", action = CheckAuth}
-      , page = Home
+      , page = Loading
       , store = (transformStorage flags)
       }
     , checkAuth (transformStorage flags) location
