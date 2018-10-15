@@ -54,7 +54,7 @@ update msg model =
             AuthManager auth ->
                 if String.isEmpty auth.token then (model, gotoLogin) else (model ,Cmd.none)
 
-            Logout -> (model,Cmd.batch [ (clearStorage "all"), (refreshUrl)])
+            Logout -> (model,Cmd.batch [ (clearStorage "all"), (gotoLogout)])
 
 
 
