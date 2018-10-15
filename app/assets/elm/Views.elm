@@ -40,7 +40,7 @@ view model =
                                 ,   Grid.col [ Col.md4 ] [ viewSendFile model ]
 
 
-                                ,   Grid.col [ Col.md4 ] [contentNavigation model]
+                                ,   Grid.col [ Col.md4 ] []
                                 ]
     ]
 
@@ -69,6 +69,3 @@ viewInputFile model =
         ]
 
 
-contentNavigation: Model ->  Msg
-contentNavigation model =
-    (AuthManager model.auth)
