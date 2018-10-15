@@ -15,6 +15,8 @@ goto : String -> Cmd Msg
 goto url =
     Nav.load url
 
+
+
 gotoHome: Cmd Msg
 gotoHome =
     goto "http://localhost:9000#home"

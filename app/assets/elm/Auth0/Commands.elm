@@ -5,7 +5,7 @@ import LocalStorage
 import Ports exposing (StorageData)
 import QueryString
 import Routing exposing (..)
-
+import Env exposing (..)
 
 
 
@@ -13,12 +13,12 @@ import Routing exposing (..)
 
 gotoLogin : Cmd Msg
 gotoLogin =
-    goto "https://redbee.auth0.com/authorize?response_type=token&client_id=BI0pcNiLJ3GhKSw2MY2diFBngY7chzHe&redirect_uri=http://localhost:9000/#authcallback"
+    goto (auth0_domain_url ++ "/authorize?response_type=token&client_id=" ++ auth0_client_id ++ "&redirect_uri=" ++ auth0_callback_url)
 
 
 gotoLogout : Cmd Msg
 gotoLogout =
-    goto "https://redbee.auth0.com/v2/logout?client_id=BI0pcNiLJ3GhKSw2MY2diFBngY7chzHe&returnTo=http://localhost:9000/#home"
+    goto (auth0_domain_url ++ "/logout?client_id=" ++ auth0_client_id ++ "&returnTo=" ++ auth0_return_url)
 
 
 manageAuth : (List StorageData) -> Navigation.Location -> Cmd Msg
